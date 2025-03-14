@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing Receipt</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid black;
+            background-color: lightgrey;
+            border-radius: 10px;
+        }
+        .header {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .input-group {
+            margin-bottom: 10px;
+        }
+        .input-group label {
+            display: block;
+            font-weight: bold;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 5px;
+        }
+        .buttons button {
+            padding: 10px 15px;
+            margin-right: 10px;
+            cursor: pointer;
+            background-color: purple;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: center;
+        }
+
+        @media print {
+            .input-group, .buttons {
+                display: none;
+            }
+            body {
+                margin: 0;
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body onload="loadStoreDetails()">
+    <div class="container">
+        <div class="header">**** Bill Receipt ****</div>
+
+        <div id="storeDetails">
+            <p><strong>Store Name:</strong> <span id="storeName"></span></p>
+            <p><strong>Address:</strong> <span id="storeAddress"></span></p>
+            <p><strong>Mobile No:</strong> <span id="storeMobile"></span></p>
+            <p><strong>Bill Number:</strong> <span id="billNumber"></span></p>
+            <p><strong>Date & Time:</strong> <span id="dateTime"></span></p>
+        </div>
+
+        <div class="input-group">
+            <label>Product Name:</label>
+            <input type="text" id="productName" required>
+        </div>
+        <div class="input-group">
+            <label>Quantity:</label>
+            <input type="number" id="quantity" min="1" value="1" required>
+        </div>
+        <div class="input-group">
+            <label>Price Per Quantity:</label>
+            <input type="number" id="price" min="0" step="0.01" required>
+        </div>
+        <div class="buttons">
+            <button onclick="addItem()">Add Item</button>
+            <button onclick="printReceipt()">Print</button>
+        </div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Sr No</th>
+                    <th>Name</th>
+                    <th>Quantity</th>
+                    <th>Price Per Quantity</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody id="billTable"></tbody>
+        </table>
+        <h3>Total Amount: ₹<span id="totalAmount">0.00</span></h3>
+    </div>
+
+    <script>
+        let itemIndex = 1;
+        let totalAmount = 0;
+        let billCounter = localStorage.getItem('billCounter') || 1;
+
+        function loadStoreDetails() {
+            const params = new URLSearchParams(window.location.search);
+            document.getElementById('storeName').textContent = params.get('storeName') || "N/A";
+            document.getElementById('storeAddress').textContent = params.get('address') || "N/A";
+            document.getElementById('storeMobile').textContent = params.get('mobileNo') || "N/A";
+            
+            // Generate Incremental Bill Number
+            document.getElementById('billNumber').textContent = 'BILL-' + String(billCounter).padStart(7, '0');
+            billCounter++;
+            localStorage.setItem('billCounter', billCounter);
+            
+            // Show Date & Time
+            const now = new Date();
+            document.getElementById('dateTime').textContent = now.toLocaleString();
+        }
+
+        function addItem() {
+            const productName = document.getElementById("productName").value;
+            const quantity = Number(document.getElementById("quantity").value);
+            const price = Number(document.getElementById("price").value);
+
+            if (productName && quantity > 0 && price >= 0) {
+                const total = (quantity * price).toFixed(2);
+                totalAmount += parseFloat(total);
+                document.getElementById("totalAmount").innerText = totalAmount.toFixed(2);
+
+                let table = document.getElementById("billTable");
+                let row = table.insertRow();
+                row.innerHTML = `
+                    <td>${itemIndex++}</td>
+                    <td>${productName}</td>
+                    <td>${quantity}</td>
+                    <td>${price.toFixed(2)}</td>
+                    <td>${total}</td>
+                `;
+
+                // Reset input fields
+                document.getElementById("productName").value = "";
+                document.getElementById("quantity").value = 1;
+                document.getElementById("price").value = "";
+            } else {
+                alert("Please fill all product details correctly.");
+            }
+        }
+
+        function printReceipt() {
+            window.print();
+        }
+    </script>
+</body>
+</html>

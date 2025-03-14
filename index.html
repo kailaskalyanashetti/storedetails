@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: lightblue;
+            text-align: center;
+            animation: zoomIn 0.5s ease;
+        }
+        .container {
+            background-color: skyblue;
+            width: 50%;
+            margin: auto;
+            padding: 20px;
+            border-radius: 10px;
+            animation: slideDown 0.5s ease;
+        }
+        .header {
+            background-color: purple;
+            color: white;
+            padding: 10px;
+            font-size: 20px;
+            animation: pulse 2s infinite;
+        }
+        input {
+            width: 90%;
+            padding: 10px;
+            margin: 5px;
+            animation: fadeInUp 0.5s ease;
+        }
+        input:focus {
+            outline: none;
+            border: 2px solid purple;
+            box-shadow: 0 0 10px purple;
+        }
+        .link {
+            background-color: purple;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            display: inline-block;
+            text-decoration: none;
+            animation: float 2s ease-in-out infinite;
+        }
+        .link:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-20px); }
+            to { transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+    </style>
+</head>
+<body>
+    <h1>STORE DETAILS</h1>
+    <div class="container">
+        <div class="header">FILL THE DETAILS</div>
+        <form id="storeForm" onsubmit="goToBillingPage(event)">
+            <input type="text" id="storeName" placeholder="Store Name" required><br>
+            <input type="text" id="address" placeholder="Address" required><br>
+            <input type="text" id="mobileNo" placeholder="Mobile No" required><br><br>
+            <button type="submit" class="link">Next</button>
+        </form>
+    </div>
+
+    <script>
+        function goToBillingPage(event) {
+            event.preventDefault(); // Prevent form submission
+            const storeName = document.getElementById('storeName').value;
+            const address = document.getElementById('address').value;
+            const mobileNo = document.getElementById('mobileNo').value;
+
+            if (storeName && address && mobileNo) {
+                window.location.href = `billing.html?storeName=${encodeURIComponent(storeName)}&address=${encodeURIComponent(address)}&mobileNo=${encodeURIComponent(mobileNo)}`;
+            } else {
+                alert("Please fill all details.");
+            }
+        }
+    </script>
+</body>
+</html>
